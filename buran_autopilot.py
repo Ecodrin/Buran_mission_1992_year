@@ -2,7 +2,7 @@ import math
 import time
 import krpc
 
-target_altitude = 350000
+target_altitude = 150000
 
 conn = krpc.connect(name='Buran')
 vessel = conn.space_center.active_vessel
