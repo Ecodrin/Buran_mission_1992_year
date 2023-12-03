@@ -1,23 +1,23 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from math import sqrt, sin, cos, pi
 import pandas as pd
 
 
 class Vector:
-
-    def __init__(self, x = 0, y = 0):
+    def __init__(self, x=0, y=0):
         self.x = x
         self.y = y
 
     def __add__(self, other):
-        if __name__ == '__main__':
-            return Vector(self.x + other.x, self.y + other.y)
+        if isinstance(other, Vector):
+            raise TypeError
+        return Vector(self.x + other.x, self.y + other.y)
 
 
 def main():
+    time_rise = []
     height = 0
-    resistance_coefficient = 0.5
+    resistance_coefficient = 1
     thrust_of_the_first_stage = 9806.65 * 800
     thrust_of_the_second_stage = 9806.65 * 650
     table = {'Высота': [], 'Скорость': []}
@@ -27,6 +27,7 @@ def main():
     gg = 6.67 * 10 ** -11
     m_0 = 240_000
     minus_topl = [sqrt(i) for i in range(10000)]
+
     pl = list(map(lambda x: x / 1000, [3.08, 2.35, 1.75, 1.75, 1.40, 1.09,
                                        0.842, 0.627, 0.550, 0.402, 0.316,
                                        0.245, 0.181, 0.144, 0.102, 0.0769,
@@ -47,11 +48,19 @@ def main():
         table['Скорость'].append(sqrt(speed.x ** 2 + speed.y ** 2))
         m_0 -= minus_topl[t]
         t += 1
+        #if table['Скорость'][-1] > 2500:
         alpha -= 0.05
         if height > 50000:
             thrust_of_the_first_stage = thrust_of_the_second_stage
-
-    print(pd.DataFrame(table))
+        time_rise.append(t)
+    plt.plot(time_rise, table['Высота'])
+    plt.title('Зависимость высоты от времени')
+    plt.xlabel('Время в секундах')
+    plt.ylabel('Высота в метрах')
+    plt.show()
+    table = pd.DataFrame(table)
+    print(table)
+    table.to_csv("report")
 
 
 if __name__ == '__main__':
