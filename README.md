@@ -3,19 +3,26 @@
 
 <head>
   <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rubik+Bubbles&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Pacifico';
+      }
+    </style>
 </head>
 
 <body>
-  <font face="times new roman">
     <h1 align="center">Проект "Энергия - Буран, миссия 1992 года"</h1>
     <h3>команда CodeBrewers:</h3>
     <p>
-        <li>Ecodrin - тимлид
+        <li>Ecodrin - Тимлид
         <li>Ke1thuzad - Программист
         <li>gakostennikov - Математик/физик
         <li>Liza2398 - Математик/физик
     </p>
-    <h2 align="center">Немного истории:</h2>
+    <h2 align="center" >Много истории:</h2>
     <p align="justify">Космический аппарат "Буран" был результатом амбициозного советского проекта,
     направленного на создание многоразового орбитального корабля. В этот день 1988 года "Буран"
     осуществил свой первый и единственный полет в рамках программы "Энергия-Буран". "Буран"
@@ -62,11 +69,13 @@
         <li> Сдача проекта.
     </ol>
     <h2 align="center">Реализазция в KSP</h2>
-    <p>
-        <a href="Ships/">Файлы Бурана(собранный в KSP)</a>
+    <p align="center">
+        <a href="Ships/" >Файлы Бурана(собранный в KSP)</a>
         <br>
         <a href="Новая%игра/">Станция МИР(без модов в KSP)</a>
         <ol>
+            <li>До взлета
+            <img src="foto/KSP_x64 2023-12-03 17-53-22.jpg">
             <li> Выход из атмосферы
             <img src="foto/KSP_x64 2023-12-02 17-37-02.jpg">
             <li> До отбрасывания ступеней
@@ -76,6 +85,10 @@
             <img src="foto/KSP_x64 2023-12-02 17-43-56.jpg">
             <img src="foto/KSP_x64 2023-12-02 17-45-19.jpg">
             <img src="foto/KSP_x64 2023-12-02 17-51-16.jpg">
+            <li> После стыковки
+            <img src="foto/KSP_x64 2023-12-03 17-40-24.jpg">
+            <img src="foto/KSP_x64 2023-12-03 17-39-59.jpg">
+            <img src="foto/KSP_x64 2023-12-03 17-39-05.jpg">
         </ol>
     </p>
     <h3 align="center">Реализация автополота:</h3>
@@ -89,7 +102,7 @@
             </p>
         <li>
         <p>
-                <a href="hohmann_auto.py">Переход на орбиту ~350км</a>
+                <a href="hohmann_auto.py">Переход на орбиту ~250км</a>
                 <br>
                 На этой орбите вращается орбитальная станция МИР.
                 <br>
@@ -101,7 +114,7 @@
     Считается для сравнения результатов в KSP и подсчетов в матеметической модели.
     <a href="scripts.py">Файл</a>
     </p>
-</font>
+
 </body>
 
 </html>
