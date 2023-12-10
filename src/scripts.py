@@ -86,7 +86,7 @@ def first_orbit():
     plt.xlabel("Координаты по X")
     plt.ylabel("Координаты по Y")
     plt.show()
-    plt.grid(color='black', linestyle='-', linewugth=2)
+    plt.grid(color='black', linestyle='-', linewidth=2)
 
 
 def second_orbit(acceleration, height, m_0):
