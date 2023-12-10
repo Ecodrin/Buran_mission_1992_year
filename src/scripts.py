@@ -30,12 +30,15 @@ def first_orbit():
     alpha = 90
     gg = 3.5 * 10 ** 12
     m_0 = 240_000
+    coordinate = Vector(0, 600_000)
     minus_topl = [sqrt(i) for i in range(10000)]
 
     pl = {0: 1.225, 2500: 0.898, 5000: 0.642, 7500: 0.446,
           10000: 0.288, 15000: 0.108, 20000: 0.040, 25000: 0.015,
           30_000: 0.006, 40_000: 0.001}
     t = 0
+    x = [0]
+    y = [0]
     spped_first_cosmo = sqrt(gg / (600_000 + 150_000))
     while height < 150_000:
         f_thrust = thrust_of_the_first_stage
@@ -43,35 +46,47 @@ def first_orbit():
         f_resistance = (resistance_coefficient * (pi * 9 * (18 + 10)) * (speed.y ** 2)
                         * (pl[int(height // 10_000 * 10_000)] if height <= 40000 else 0) / 2)
         acceleration.y = (f_thrust - f_resistance - f_gravity) * sin(radians(alpha)) / m_0
-        #print(t, f_gravity, f_resistance, f_thrust, height, sep=" ------ ")
+        #print(f_gravity, f_resistance, f_thrust, height, sep=" ------ ")
         height += speed.y + acceleration.y / 2
+        y.append(y[-1] + speed.y + acceleration.y / 2)
         speed.y = acceleration.y + speed.y
         table['Высота'].append(height)
         acceleration.x = (f_thrust - f_resistance - f_gravity) * cos(radians(alpha)) / m_0
         speed.x = acceleration.x + speed.x
+
         table['Скорость'].append(sqrt(speed.x ** 2 + speed.y ** 2))
         m_0 -= minus_topl[t]
         full_speed = sqrt(speed.x ** 2 + speed.y ** 2)
         t += 1
+        x.append(x[-1] + speed.x + acceleration.x)
         if full_speed > spped_first_cosmo:
             thrust_of_the_first_stage = 0
-        if height > 6000 and alpha >= 6:
+        if height > 6000 and alpha >= 2:
             alpha -= 2
         time_rise.append(t)
+    plt.grid(color='black', linestyle='-', linewidth=1)
     plt.plot(time_rise, table['Высота'])
     plt.title('Зависимость высоты от времени')
     plt.xlabel('Время в секундах')
     plt.ylabel('Высота в метрах')
     plt.show()
+    plt.grid(color='b', linestyle='-', linewidth=1)
     plt.plot(time_rise, table['Скорость'])
     plt.title('Зависимость скорости от времени')
     plt.xlabel("Время в секундах")
     plt.ylabel("Скорость м/c")
     plt.show()
+    plt.grid(color='black', linestyle='-', linewidth=1)
     table = pd.DataFrame(table)
     print(table)
     table.to_csv("report")
     second_orbit(acceleration, height, m_0)
+    plt.plot(x, y)
+    plt.title("Координатная зависимость")
+    plt.xlabel("Координаты по X")
+    plt.ylabel("Координаты по Y")
+    plt.show()
+    plt.grid(color='black', linestyle='-', linewugth=2)
 
 
 def second_orbit(acceleration, height, m_0):
