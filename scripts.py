@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from math import sqrt, sin, cos, pi
+from math import sqrt, sin, cos, pi, radians
 import pandas as pd
 
 
@@ -14,53 +14,78 @@ class Vector:
         return Vector(self.x + other.x, self.y + other.y)
 
 
-def main():
+def first_orbit():
+    """
+    Выход на первую орбиту, около 150км. Подготовка в Гомановскому переходу.
+    Учитываем Силу гравитации, силу сопротивления воздуха, силу тяжести.
+    Используем скорость и ускорение как основные изменяемые характеристики.
+    """
     time_rise = []
     height = 0
-    resistance_coefficient = 1
-    thrust_of_the_first_stage = 9806.65 * 800
-    thrust_of_the_second_stage = 9806.65 * 650
+    resistance_coefficient = 0.5
+    thrust_of_the_first_stage = 9806.65 * 2600
+    thrust_of_the_second_stage = 9806.65 * 800
     table = {'Высота': [], 'Скорость': []}
     acceleration = Vector()
     speed = Vector()
     alpha = 90
-    gg = 6.67 * 10 ** -11
+    gg = 3.5 * 10 ** 12
     m_0 = 240_000
-    minus_topl = [sqrt(i) for i in range(10000)]
+    minus_topl = [sqrt(i) for i in range(10000)][::-1]
 
-    pl = list(map(lambda x: x / 1000, [3.08, 2.35, 1.75, 1.75, 1.40, 1.09,
-                                       0.842, 0.627, 0.550, 0.402, 0.316,
-                                       0.245, 0.181, 0.144, 0.102, 0.0769,
-                                       0.594, 0.449, 0.0327, 0.0239, 0.0163]))
-
+    pl = {0: 1.225, 2500: 0.898, 5000: 0.642, 7500: 0.446,
+          10000: 0.288, 15000: 0.108, 20000: 0.040, 25000: 0.015,
+          30_000: 0.006, 40_000: 0.001}
     t = 0
-    while height < 350_000:
+    spped_first_cosmo = sqrt(gg / (600_000 + 150_000))
+    while height < 150_000:
         f_thrust = thrust_of_the_first_stage
-        f_gravity = gg * m_0 * 5.9726 ** 24 / ((6378_000 + height) ** 2)
-        f_resistance = (resistance_coefficient * (pi * 18 * (18 + 40)) * (speed.y ** 2)
-                        * (pl[int(height // 2000)] if height < 40000 else 0) / 2)
-        acceleration.y = (f_thrust - f_resistance - f_gravity) * sin(alpha) / m_0
+        f_gravity = gg * m_0 / ((600_000 + height) ** 2)
+        f_resistance = (resistance_coefficient * (pi * 9 * (18 + 10)) * (speed.y ** 2)
+                        * (pl[int(height // 10_000 * 10_000)] if height <= 40000 else 0) / 2)
+        acceleration.y = (f_thrust - f_resistance - f_gravity) * sin(radians(alpha)) / m_0
+        #print(alpha, height, acceleration.y, speed.y, acceleration.x, acceleration.y, sep=" ------ ")
+        height += speed.y + acceleration.y / 2
         speed.y = acceleration.y + speed.y
-        height = height + speed.y + acceleration.y / 2
         table['Высота'].append(height)
-        acceleration.x = (f_thrust - f_resistance - f_gravity) * cos(alpha) / m_0
+        acceleration.x = (f_thrust - f_resistance - f_gravity) * cos(radians(alpha)) / m_0
         speed.x = acceleration.x + speed.x
         table['Скорость'].append(sqrt(speed.x ** 2 + speed.y ** 2))
         m_0 -= minus_topl[t]
+        full_speed = sqrt(speed.x ** 2 + speed.y ** 2)
         t += 1
-        #if table['Скорость'][-1] > 2500:
-        alpha -= 0.05
-        if height > 50000:
-            thrust_of_the_first_stage = thrust_of_the_second_stage
+        if full_speed > spped_first_cosmo:
+            thrust_of_the_first_stage = 0
+        if height > 6000 and alpha >= 6:
+            alpha -= 2
         time_rise.append(t)
     plt.plot(time_rise, table['Высота'])
     plt.title('Зависимость высоты от времени')
     plt.xlabel('Время в секундах')
     plt.ylabel('Высота в метрах')
     plt.show()
+    plt.plot(time_rise, table['Скорость'])
+    plt.title('Зависимость скорости от времени')
+    plt.xlabel("Время в секундах")
+    plt.ylabel("Скорость м/c")
+    plt.show()
     table = pd.DataFrame(table)
     print(table)
     table.to_csv("report")
+    second_orbit(speed, acceleration, height)
+
+
+def second_orbit(speed, acceleration, height):
+    """
+    Гомановский переход.
+
+    """
+    second_height = 350_000
+    first_speed = sqrt(speed.x ** 2 + speed.y ** 2)
+
+
+def main():
+    first_orbit()
 
 
 if __name__ == '__main__':
