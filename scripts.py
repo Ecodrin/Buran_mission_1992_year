@@ -24,14 +24,13 @@ def first_orbit():
     height = 0
     resistance_coefficient = 0.5
     thrust_of_the_first_stage = 9806.65 * 2600
-    thrust_of_the_second_stage = 9806.65 * 800
     table = {'Высота': [], 'Скорость': []}
     acceleration = Vector()
     speed = Vector()
     alpha = 90
     gg = 3.5 * 10 ** 12
     m_0 = 240_000
-    minus_topl = [sqrt(i) for i in range(10000)][::-1]
+    minus_topl = [sqrt(i) for i in range(10000)]
 
     pl = {0: 1.225, 2500: 0.898, 5000: 0.642, 7500: 0.446,
           10000: 0.288, 15000: 0.108, 20000: 0.040, 25000: 0.015,
@@ -44,7 +43,7 @@ def first_orbit():
         f_resistance = (resistance_coefficient * (pi * 9 * (18 + 10)) * (speed.y ** 2)
                         * (pl[int(height // 10_000 * 10_000)] if height <= 40000 else 0) / 2)
         acceleration.y = (f_thrust - f_resistance - f_gravity) * sin(radians(alpha)) / m_0
-        #print(alpha, height, acceleration.y, speed.y, acceleration.x, acceleration.y, sep=" ------ ")
+        #print(t, f_gravity, f_resistance, f_thrust, height, sep=" ------ ")
         height += speed.y + acceleration.y / 2
         speed.y = acceleration.y + speed.y
         table['Высота'].append(height)
@@ -72,16 +71,22 @@ def first_orbit():
     table = pd.DataFrame(table)
     print(table)
     table.to_csv("report")
-    second_orbit(speed, acceleration, height)
+    second_orbit(acceleration, height, m_0)
 
 
-def second_orbit(speed, acceleration, height):
+def second_orbit(acceleration, height, m_0):
     """
     Гомановский переход.
 
     """
+    gg = 3.5 * 10 ** 12
+    thrust_of_the_second_stage = 9806.65 * 800
     second_height = 350_000
-    first_speed = sqrt(speed.x ** 2 + speed.y ** 2)
+    speed_orbit = sqrt(gg / (600_000 + 150_000))
+    m_0 -= 1490000
+    required_speed_0 = speed_orbit * (sqrt(2 * 7/3 / (7/3 + 1)) - 1)
+    required_speed_1 = speed_orbit * (1 / sqrt(7/3)) * (1 - sqrt(2 / (7/3 + 1)))
+    print(required_speed_0, required_speed_1, speed_orbit)
 
 
 def main():
