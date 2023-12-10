@@ -24,7 +24,7 @@ def first_orbit():
     height = 0
     resistance_coefficient = 0.5
     thrust_of_the_first_stage = 9806.65 * 2600
-    table = {'Высота': [], 'Скорость': []}
+    table = {'Высота': [], 'Скорость': [], 'Ускорение по x': [], 'Ускорение по y':[]}
     acceleration = Vector()
     speed = Vector()
     alpha = 90
@@ -38,7 +38,7 @@ def first_orbit():
           30_000: 0.006, 40_000: 0.001}
     t = 0
     x = [0]
-    y = [0]
+    y = [600_000]
     spped_first_cosmo = sqrt(gg / (600_000 + 150_000))
     while height < 150_000:
         f_thrust = thrust_of_the_first_stage
@@ -46,22 +46,23 @@ def first_orbit():
         f_resistance = (resistance_coefficient * (pi * 9 * (18 + 10)) * (speed.y ** 2)
                         * (pl[int(height // 10_000 * 10_000)] if height <= 40000 else 0) / 2)
         acceleration.y = (f_thrust - f_resistance - f_gravity) * sin(radians(alpha)) / m_0
-        #print(f_gravity, f_resistance, f_thrust, height, sep=" ------ ")
+        print(acceleration.x, acceleration.y, sep=" ------ ")
         height += speed.y + acceleration.y / 2
         y.append(y[-1] + speed.y + acceleration.y / 2)
         speed.y = acceleration.y + speed.y
         table['Высота'].append(height)
         acceleration.x = (f_thrust - f_resistance - f_gravity) * cos(radians(alpha)) / m_0
         speed.x = acceleration.x + speed.x
-
         table['Скорость'].append(sqrt(speed.x ** 2 + speed.y ** 2))
+        table['Ускорение по x'].append(acceleration.x)
+        table['Ускорение по y'].append(acceleration.y)
         m_0 -= minus_topl[t]
         full_speed = sqrt(speed.x ** 2 + speed.y ** 2)
         t += 1
         x.append(x[-1] + speed.x + acceleration.x)
         if full_speed > spped_first_cosmo:
             thrust_of_the_first_stage = 0
-        if height > 6000 and alpha >= 2:
+        if height > 6000 and alpha > 2:
             alpha -= 2
         time_rise.append(t)
     plt.grid(color='black', linestyle='-', linewidth=1)

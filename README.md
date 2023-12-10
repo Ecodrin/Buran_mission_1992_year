@@ -62,6 +62,8 @@
     </ol>
     <h2 align="center">Реализазция в KSP</h2>
     <p align="center">
+        <a href="https://drive.google.com/file/d/1Si4ssWJk0bsZqu5vogme3pZBcXmKoYHp/view?usp=drive_link">Видео-запуск</a>
+        <br>
         <a href="Ships/" >Файлы Бурана(собранный в KSP)</a>
         <br>
         <a href="Новая%игра/">Станция МИР(без модов в KSP)</a>
