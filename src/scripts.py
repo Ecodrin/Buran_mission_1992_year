@@ -24,7 +24,7 @@ def first_orbit():
     height = 0
     resistance_coefficient = 0.5
     thrust_of_the_first_stage = 9806.65 * 2600
-    table = {'Высота': [], 'Скорость': [], 'Ускорение по x': [], 'Ускорение по y':[]}
+    table = {'Высота': [], 'Скорость': [], 'Ускорение по x': [], 'Ускорение по y': []}
     acceleration = Vector()
     velocity = Vector()
     alpha = 90
@@ -45,7 +45,6 @@ def first_orbit():
         f_resistance = (resistance_coefficient * (pi * 9 * (18 + 10)) * (velocity.y ** 2)
                         * (pl[int(height // 10_000 * 10_000)] if height <= 40000 else 0) / 2)
         acceleration.y = (f_thrust - f_resistance - f_gravity) * sin(radians(alpha)) / m_0
-        #print(acceleration.x, acceleration.y, sep=" ------ ")
         height += velocity.y + acceleration.y / 2
         y.append(y[-1] + velocity.y + acceleration.y / 2)
         velocity.y = acceleration.y + velocity.y
@@ -64,15 +63,8 @@ def first_orbit():
         if height > 60000 and alpha > 2:
             alpha -= 2
         time_rise.append(t)
-    with open("Буран-Энергия Remake_12111235.csv", "r") as file:
+    with open("../Буран-Энергия Remake_12111235.csv", "r") as file:
         ksp = pd.read_csv(file)
-    plt.plot(ksp["AltitudeFromTerrain"], color='blue')
-    plt.plot(time_rise, table['Высота'], color='black')
-    plt.legend(["KSP", "Мат.модель"])
-    plt.title('Зависимость высоты от времени')
-    plt.xlabel('Время в секундах')
-    plt.ylabel('Высота в метрах')
-    plt.show()
     plt.plot(ksp["Velocity"][:200], color='blue')
     plt.plot(time_rise, table['Скорость'], color='black')
     plt.legend(["KSP", "Мат.модель"])
@@ -80,19 +72,29 @@ def first_orbit():
     plt.xlabel("Время в секундах")
     plt.ylabel("Скорость м/c")
     plt.show()
-    table = pd.DataFrame(table)
-    table.to_csv("./report.csv")
-    second_orbit(acceleration, height, m_0)
     plt.plot(x, y, color='black')
     plt.title("Координатная зависимость")
     plt.xlabel("Координаты по X")
     plt.ylabel("Координаты по Y")
     plt.show()
+    plt.title("Зависимость плотности воздуха от высоты")
+    plt.xlabel("Высота")
+    plt.ylabel("Плотность")
+    plt.plot(pl.keys(), pl.values())
+    plt.show()
+    plt.title("Зависимость скорости и высоты")
+    plt.xlabel("Высота")
+    plt.ylabel("скорость")
+    plt.plot(table["Высота"], table["Скорость"])
+    plt.show()
+    second_orbit(acceleration, height, m_0, table)
+    table = pd.DataFrame(table)
+    table.to_csv("./report.csv")
     print(table)
     print("All good. Check out report.csv")
 
 
-def second_orbit(acceleration, height, m_0):
+def second_orbit(acceleration, height, m_0, table):
     """
     Гомановский переход.
 
@@ -102,9 +104,23 @@ def second_orbit(acceleration, height, m_0):
     second_height = 350_000
     speed_orbit = sqrt(gg / (600_000 + 150_000))
     m_0 -= 1490000
+    gamma_1 = pi - pi * sqrt(1/8 * (1 + 3/5) ** 3)
+    gamma_2 = pi - gamma_1
+    time = pi * sqrt((250_000 + 150_000) ** 3 / 8 / (3.5316000 * 10 ** 12))
+    w = gamma_1 / time
     required_speed_0 = speed_orbit * (sqrt(2 * 7/3 / (7/3 + 1)) - 1)
     required_speed_1 = speed_orbit * (1 / sqrt(7/3)) * (1 - sqrt(2 / (7/3 + 1)))
+    with open("../Буран-Энергия Remake_12111235.csv", "r") as file:
+        ksp = pd.read_csv(file)
+    plt.plot(ksp["AltitudeFromTerrain"], color='blue')
+    plt.plot(range(len(table["Высота"])), table["Высота"], color='red')
+    plt.legend(["KSP", "Мат.модель"])
+    plt.title('Зависимость высоты от времени')
+    plt.xlabel('Время в секундах')
+    plt.ylabel('Высота в метрах')
+    plt.show()
     print(required_speed_0, required_speed_1, speed_orbit)
+    print((gamma_2 + gamma_1) / w)
 
 
 def main():
