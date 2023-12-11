@@ -58,34 +58,36 @@ def first_orbit():
         m_0 -= minus_topl[t]
         full_speed = sqrt(velocity.x ** 2 + velocity.y ** 2)
         t += 1
-        x.append(x[-1] + velocity.x + acceleration.x)
+        x.append(x[-1] + velocity.x + acceleration.x / 2)
         if full_speed > speed_first_cosmo:
             thrust_of_the_first_stage = 0
         if height > 60000 and alpha > 2:
             alpha -= 2
         time_rise.append(t)
-    plt.grid(color='black', linestyle='-', linewidth=1)
-    plt.plot(time_rise, table['Высота'])
+    with open("Буран-Энергия Remake_12111235.csv", "r") as file:
+        ksp = pd.read_csv(file)
+    plt.plot(ksp["AltitudeFromTerrain"], color='blue')
+    plt.plot(time_rise, table['Высота'], color='black')
+    plt.legend(["KSP", "Мат.модель"])
     plt.title('Зависимость высоты от времени')
     plt.xlabel('Время в секундах')
     plt.ylabel('Высота в метрах')
     plt.show()
-    plt.grid(color='black', linestyle='-', linewidth=1)
-    plt.plot(time_rise, table['Скорость'])
+    plt.plot(ksp["Velocity"][:200], color='blue')
+    plt.plot(time_rise, table['Скорость'], color='black')
+    plt.legend(["KSP", "Мат.модель"])
     plt.title('Зависимость скорости от времени')
     plt.xlabel("Время в секундах")
     plt.ylabel("Скорость м/c")
     plt.show()
-    plt.grid(color='black', linestyle='-', linewidth=1)
     table = pd.DataFrame(table)
     table.to_csv("./report.csv")
     second_orbit(acceleration, height, m_0)
-    plt.plot(x, y)
+    plt.plot(x, y, color='black')
     plt.title("Координатная зависимость")
     plt.xlabel("Координаты по X")
     plt.ylabel("Координаты по Y")
     plt.show()
-    plt.grid(color='black', linestyle='-', linewidth=2)
     print(table)
     print("All good. Check out report.csv")
 
