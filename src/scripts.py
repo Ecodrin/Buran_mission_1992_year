@@ -1,6 +1,13 @@
 import matplotlib.pyplot as plt
-from math import sqrt, sin, cos, pi, radians
+from math import sqrt, sin, cos, pi
 import pandas as pd
+
+PI = 3.141592653589793
+rad2deg = 180 / PI
+
+
+def radians(x):
+    return x / rad2deg
 
 
 class Vector:
@@ -9,7 +16,7 @@ class Vector:
         self.y = y
 
     def __add__(self, other):
-        if isinstance(other, Vector):
+        if not isinstance(other, Vector):
             raise TypeError
         return Vector(self.x + other.x, self.y + other.y)
 
@@ -23,7 +30,7 @@ def first_orbit():
     time_rise = []
     height = 0
     resistance_coefficient = 0.5
-    thrust_of_the_first_stage = 9806.65 * 2600
+    thrust_of_the_first_stage = 34840000
     table = {'Высота': [], 'Скорость': [], 'Ускорение по x': [], 'Ускорение по y': []}
     acceleration = Vector()
     velocity = Vector()
@@ -39,23 +46,25 @@ def first_orbit():
     x = [0]
     y = [600_000]
     speed_first_cosmo = sqrt(gg / (600_000 + 150_000))
-    while height < 150_000:
+    while height <= 150_000:
+        full_speed = sqrt(velocity.x ** 2 + velocity.y ** 2)
         f_thrust = thrust_of_the_first_stage
         f_gravity = gg * m_0 / ((600_000 + height) ** 2)
-        f_resistance = (resistance_coefficient * (pi * 9 * (18 + 10)) * (velocity.y ** 2)
+        f_resistance = (resistance_coefficient * (pi * 9 * (18 + 10)) * (full_speed ** 2)
                         * (pl[int(height // 10_000 * 10_000)] if height <= 40000 else 0) / 2)
         acceleration.y = (f_thrust - f_resistance - f_gravity) * sin(radians(alpha)) / m_0
         height += velocity.y + acceleration.y / 2
         y.append(y[-1] + velocity.y + acceleration.y / 2)
-        velocity.y = acceleration.y + velocity.y
         table['Высота'].append(height)
         acceleration.x = (f_thrust - f_resistance - f_gravity) * cos(radians(alpha)) / m_0
-        velocity.x = acceleration.x + velocity.x
+        #velocity += Vector(acceleration.x, acceleration.y)
         table['Скорость'].append(sqrt(velocity.x ** 2 + velocity.y ** 2))
         table['Ускорение по x'].append(acceleration.x)
         table['Ускорение по y'].append(acceleration.y)
+
+        velocity.x = acceleration.x + velocity.x
+        velocity.y = acceleration.y + velocity.y
         m_0 -= minus_topl[t]
-        full_speed = sqrt(velocity.x ** 2 + velocity.y ** 2)
         t += 1
         x.append(x[-1] + velocity.x + acceleration.x / 2)
         if full_speed > speed_first_cosmo:
@@ -89,7 +98,7 @@ def first_orbit():
     plt.show()
     second_orbit(acceleration, height, m_0, table)
     table = pd.DataFrame(table)
-    table.to_csv("./report.csv")
+    table.to_csv("../report.csv")
     print(table)
     print("All good. Check out report.csv")
 
