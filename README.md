@@ -60,7 +60,7 @@
         <li> autopilot
         <li> Сдача проекта.
     </ol>
-    <h2 align="center">Реализазция в KSP</h2>
+    <h2 align="center">Реализация в KSP</h2>
     <p align="center">
         <a href="https://drive.google.com/file/d/1Si4ssWJk0bsZqu5vogme3pZBcXmKoYHp/view?usp=drive_link">Видео-запуск</a>
         <br>
@@ -85,7 +85,7 @@
             <img src="foto/KSP_x64 2023-12-03 17-39-05.jpg">
         </ol>
     </p>
-    <h3 align="center">Реализация автополота:</h3>
+    <h3 align="center">Реализация автопилота:</h3>
     Происходит в 2 этапа.
     <ol>
         <li>
