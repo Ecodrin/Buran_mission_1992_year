@@ -47,7 +47,7 @@ def first_orbit():
     time_rise = []
     height = 0
     resistance_coefficient = 0.5
-    thrust_of_the_first_stage = 15878800
+    thrust_of_the_first_stage = 25870000
     table = {'Высота': [], 'Скорость': [], 'Ускорение по x': [], 'Ускорение по y': []}
     acceleration = Vector()
     velocity = Vector()
